@@ -60,6 +60,5 @@ module.exports = class ChipotleOrder extends Order{
     }
          break;
         }
-        return aReturn;
-    }
-}
+       
+    
