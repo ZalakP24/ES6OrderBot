@@ -5,7 +5,8 @@ const OrderState = Object.freeze({
     SIZE:   Symbol("size"),
     TOPPINGS:   Symbol("toppings"),
     SAUCE: Symbol("sauce"),
-    SALAD:  Symbol("salad")
+    SALAD:  Symbol("salad"),
+    QUANTITY: Symbol("quantity")
 });
 
 module.exports = class ChipotleOrder extends Order{
@@ -18,6 +19,8 @@ module.exports = class ChipotleOrder extends Order{
         this.sSalad = "";
         this.sItem = "Chipotle";
         this.sPrice = 10;
+        this.sQuantity = "";
+        this.sSaucePrice = 0;
     }
     handleInput(sInput){
         let aReturn = [];
@@ -45,20 +48,41 @@ module.exports = class ChipotleOrder extends Order{
             case OrderState.TOPPINGS:
                 this.stateCur = OrderState.SAUCE
                 this.sToppings = sInput;
-                aReturn.push("Which Sauce would you like?");
+                aReturn.push("Which Sauce would you like 1.Tomato 2.Ranch 3.Sweet Onion ?");
                 break;
             case OrderState.SAUCE:
-                this.stateCur = OrderState.SALAD
+                this.stateCur = OrderState.QUANTITY
                 this.sSauce = sInput;
+                if(this.sSauce== "Mayo"){
+                    this.sPrice += 2;
+                    this.sSaucePrice = 2;
+                }
+                if(this.sSauce = "ranch"){
+                    this.sPrice += 3;
+                    this.sSaucePrice = 3;
+                }
+                if(this.sSauce == "sweet onion"){
+                    this.sPrice += 4;
+                    this.sSaucePrice = 4;
+                }
+                aReturn.push("How many Sauces you want?");                        
+                break;
+            case OrderState.QUANTITY: 
+                this.stateCur = OrderState.SALAD           
+          
+                this.sQuantity = sInput;
+                this.sPrice += this.sSaucePrice*parseInt(sInput);
                 aReturn.push("Would you like Salad with that?");
                 break;
             case OrderState.SALAD:
+                
                 this.isDone(true);
-                if(sInput.toLowerCase() != "no"){
+                if(sInput.toLowerCase() != "no"){  
+                     
                     this.sSalad = sInput;
                     this.sPrice += 10;
-                    
-                }
+                }           
+
                 aReturn.push("Thank-you for your order of");
                 aReturn.push(`${this.sSize} ${this.sItem} with ${this.sToppings} and ${this.sSauce} Sauce `); 
                 if(this.sSalad){
